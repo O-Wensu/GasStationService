@@ -1,0 +1,95 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"></script>
+  <title>가스 스테이션</title>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+</head>
+  <style>
+    .logo {
+      height: 300px;
+      width: 800px;
+      margin: 20px auto 20px auto;
+      padding: 20px 20px 20px 20px;
+
+      /* 그림자 */
+      box-shadow: 0px 0px 3px 0px gray;
+      background-image: linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.5)
+        ),
+        url("https://cdnweb01.wikitree.co.kr/webdata/editor/202009/21/img_20200921132619_15e14b27.webp");
+      background-position: center;
+      background-size: cover;
+    }
+    .login {
+      width: 300px;
+      margin: 20px auto 20px auto;
+    }
+
+    .login > button {
+      width: 300px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      margin-top: 20px;
+    }
+    .sign-in {
+      width: 300px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: right;
+      color: black;
+
+      margin-top: 20px;
+    }
+
+    .sign-in :hover {
+      color: darkgray;
+    }
+  </style>
+
+  <body>
+    <div class="logo"></div>
+    <div class="login">
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">이메일</label>
+        <input
+          type="email"
+          class="form-control"
+          id="exampleFormControlInput1"
+          placeholder="email"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label"
+          >비밀번호</label
+        >
+        <input
+          type="email"
+          class="form-control"
+          id="exampleFormControlInput1"
+          placeholder="password"
+        />
+      </div>
+      <button type="button" class="btn btn-secondary">로그인</button>
+      <a
+        style="text-decoration: none"
+        href=""
+        for="exampleFormControlInput1"
+        class="sign-in"
+        >회원가입</a
+      >
+    </div>
+  </body>
+</html>
