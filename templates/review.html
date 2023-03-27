@@ -3,154 +3,165 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-      crossorigin="anonymous"></script>
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
   <title>가스 스테이션</title>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
   <title>Document</title>
 </head>
-  <style>
-    .sign-out {
-      height: 100px;
-    }
-    /* 지도와 리스트를 감싸는 div */
-    .container {
-      display: flex;
-      flex-wrap: wrap;
-    }
+<style>
+  .sign-out {
+    width: 10%;
+    margin:0px 0px 0px auto;
+    margin-top: 2%;
+  }
 
-    /* 지도 영역 */
-    #map {
-      width: 60%;
-      height: 500px;
-    }
+  /* 지도와 리스트를 감싸는 div */
+  .container {
+    margin-top: 8.6%;
+    display: flex;
+    flex-wrap: wrap;
+  }
 
-    /* 리스트 영역 */
-    #list {
-      width: 40%;
-      height: 500px;
-      /* overflow-y: auto; */
-    }
+  /* 지도 영역 */
+  #map {
+    width: 50%;
+    height: 500px;
+  }
 
-    /* 리스트 아이템 */
-    li {
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-    }
+  /* 리스트 영역 */
+  #list {
+    margin-left: 5%;
+    width: 40%;
+    height: 500px;
+    /* overflow-y: auto; */
+  }
 
-    /* 리스트 아이템 마우스 호버 */
-    li:hover {
-      background-color: #f5f5f5;
-    }
-    /* 로그아웃 */
-    a {
-      position: absolute;
-      top: 0;
-      right: 0;
-      margin: 10px;
-    }
-    .review {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-    }
-    .review > button {
-      margin-left: 20px;
-      width: 100px;
-    }
-  </style>
-  <body>
-    <div class="sign-out">
-      <a style="text-decoration: none" href="">로그아웃</a>
-    </div>
+  /* 리스트 아이템 */
+  li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+  }
 
-    <!-- 지도와 리스트를 감싸는 div -->
-    <div class="container">
-      <!-- 지도 영역 -->
-      <div id="map"></div>
-      <!-- 리스트 영역 -->
-      <div id="list">
-        <div class="list-group">
-          <a href="#" class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
-              <!-- <small class="date">2023-03-28</small> -->
-            </div>
-            <div class="d-flex price-container">
-              <p class="mb-1 gasoline-price">휘발유 최저: 1,533</p>
-              <p class="mb-1 diesel-price">경유: 1,533</p>
-            </div>
-            <small class="station-address">경기 파주시 월롱면 통일로 909</small>
-          </a>
-          <a href="#" class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
-              <!-- <small class="date">2023-03-28</small> -->
-            </div>
-            <div class="d-flex price-container">
-              <p class="mb-1 gasoline-price">휘발유 최저: 1,533</p>
-              <p class="mb-1 diesel-price">경유: 1,533</p>
-            </div>
-            <small class="station-address">경기 파주시 월롱면 통일로 909</small>
-          </a>
-          <a href="#" class="list-group-item list-group-item-action">
-            <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
-              <!-- <small class="date">2023-03-28</small> -->
-            </div>
-            <div class="d-flex price-container">
-              <p class="mb-1 gasoline-price">휘발유 최저: 1,533</p>
-              <p class="mb-1 diesel-price">경유: 1,533</p>
-            </div>
-            <small class="station-address">경기 파주시 월롱면 통일로 909</small>
-          </a>
+  /* 리스트 아이템 마우스 호버 */
+  li:hover {
+    background-color: #f5f5f5;
+  }
+
+  .review {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin: 0px 0px 0px auto;
+    width: 100%;
+  }
+
+  .review>button {
+    margin-left: 20px;
+    width: 100px;
+  }
+
+  .review_container {
+    margin-top: 3%;
+  }
+
+  #submit-btn {
+    background-color: #1AAE9F;
+    border-color: #1AAE9F;
+  }
+
+  .comment-write {
+    margin-top: 3%;
+  }
+</style>
+
+<body>
+  <div class="sign-out">
+    <a style="text-decoration: none; color: black;" href="">로그아웃</a>
+  </div>
+
+  <!-- 지도와 리스트를 감싸는 div -->
+  <div class="container">
+    <!-- 지도 영역 -->
+    <div id="map"></div>
+    <!-- 리스트 영역 -->
+    <div id="list">
+      <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1 star">⭐⭐⭐⭐⭐</h5>
+            <small class="date">2023-02-18</small>
+          </div>
+          <div class="d-flex review_container">
+            <p class="mb-1 comment">여기 주유 맛집ㅋㅋㅋ</p>
+          </div>
+          <div class="d-flex">
+            <small>작성자: </small>
+            <small class="writer">바나나우유맛있다</small>
+          </div>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1 star">⭐⭐⭐⭐</h5>
+            <small class="date">2023-03-05</small>
+          </div>
+          <div class="d-flex review_container">
+            <p class="mb-1 comment">금손으로 세차하시네요</p>
+          </div>
+          <div class="d-flex">
+            <small>작성자: </small>
+            <small class="writer">초코우유맛있다</small>
+          </div>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1 star">⭐</h5>
+            <small class="date">2023-03-28</small>
+          </div>
+          <div class="d-flex review_container">
+            <p class="mb-1 comment">ㅋㅋㅋ차에 기스 실화냐?</p>
+          </div>
+          <div class="d-flex">
+            <small>작성자: </small>
+            <small class="writer">딸기우유맛있다</small>
+          </div>
+        </a>
+      </div>
+      <div class="comment-write">
+        <div class="mb-3">
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Comment"></textarea>
         </div>
-        <div style="margin-left: 20px">
-          <div class="mb-3">
-            <label for="exampleFormControlTextarea1" class="form-label"
-              >comment</label
-            >
-            <textarea
-              class="form-control"
-              id="exampleFormControlTextarea1"
-              rows="3"
-            ></textarea>
-          </div>
-          <div class="review">
-            <select class="form-select" aria-label="Default select example">
-              <option selected>Open this select menu</option>
-              <option value="one">⭐</option>
-              <option value="two">⭐⭐</option>
-              <option value="three">⭐⭐⭐</option>
-              <option value="four">⭐⭐⭐⭐</option>
-              <option value="five">⭐⭐⭐⭐⭐</option>
-            </select>
-            <button type="button" class="btn btn-secondary">등록</button>
-          </div>
+        <div class="review" style="width: 50%;">
+          <select class="form-select" aria-label="Default select example">
+            <option selected>별점</option>
+            <option value="one">⭐</option>
+            <option value="two">⭐⭐</option>
+            <option value="three">⭐⭐⭐</option>
+            <option value="four">⭐⭐⭐⭐</option>
+            <option value="five">⭐⭐⭐⭐⭐</option>
+          </select>
+          <button type="button" class="btn btn-secondary" id="submit-btn">등록</button>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Google Maps API를 사용하여 지도를 표시 -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-    <script>
-      function initMap() {
-        var center = { lat: 37.5665, lng: 126.978 }; // 지도 중심 좌표
-        var map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 12, // 지도 확대/축소 레벨
-          center: center, // 지도 중심 좌표
-        });
-      }
-    </script>
-    <script
-      async
-      defer
-      src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
-    ></script>
-  </body>
+  <!-- Google Maps API를 사용하여 지도를 표시 -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+  <script>
+    function initMap() {
+      var center = { lat: 37.5665, lng: 126.978 }; // 지도 중심 좌표
+      var map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12, // 지도 확대/축소 레벨
+        center: center, // 지도 중심 좌표
+      });
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+</body>
+
 </html>
