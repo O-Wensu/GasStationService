@@ -52,13 +52,51 @@
 			background-color: #1AAE9F;
 			border-color: #1AAE9F;
 		}
+
+		#logout {}
 	</style>
+	<script type="text/javascript"
+		src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script>
+		// 메인페이지 접속시 로그인 상태 여부에 따라 UI 변경
+		$(document).ready(function () {
+			isLogin()
+		});
+
+		//로그인 상태 여부 확인
+		function isLogin() {
+			let token = $.cookie('mytoken')
+			// 토큰이 없으면
+			if (token == null) {
+				console.log("비 로그인")
+				$('#logout').css('display', 'none')
+				$('#login').css('display', 'block')
+				$('#join').css('display', 'block')
+			} else {
+				console.log("로그인")
+				$('#logout').css('display', 'block')
+				$('#login').css('display', 'none')
+				$('#join').css('display', 'none')
+			}
+		}
+
+		//로그아웃
+		function logout() {
+			// 토큰 제거
+			$.removeCookie('mytoken');
+			alert("로그아웃")
+			window.location.reload()
+		}
+	</script>
 </head>
 
 <body>
 	<div class="sign-register">
-		<button type="button" class="btn btn-login">로그인</button>
-		<button type="button" class="btn btn-join">회원가입</button>
+		<button onclick="location.href='login'" id="login" type="button" class="btn btn-login">로그인</button>
+		<button onclick="location.href='join'" id="join" type="button" class="btn btn-join">회원가입</button>
+		<button onclick="logout()" id="logout" type="button" class="btn btn-join" style="display: none;">
+			로그아웃
+		</button>
 	</div>
 
 	<div class="logo">
@@ -66,9 +104,9 @@
 	</div>
 
 	<div class="container">
-		<input class="form-control form-control-lg" type="text" placeholder="주소" aria-label=".form-control-lg example">
-		<button onclick="location.href='login-failed.html'" type="button" class="btn btn-secondary"
-			id="submit-btn">검색</button>
+		<input class="form-control form-control-lg" type="text" placeholder="위치를 입력해주세요"
+			aria-label=".form-control-lg example">
+		<button onclick="search()" type="button" class="btn btn-secondary" id="submit-btn">검색</button>
 	</div>
 </body>
 
