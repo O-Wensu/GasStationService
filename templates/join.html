@@ -20,6 +20,7 @@
         * {
             font-family: 'Gowun Dodum', sans-serif;
         }
+
         .container {
             width: 60%;
         }
@@ -66,6 +67,43 @@
         }
     </style>
     <script>
+
+        // 회원가입
+        // 아이디, 비밀번호, 닉네임을 받아 DB에 저장
+        function join() {
+            try {
+                checkPassword()
+                $.ajax({
+                    type: "POST",
+                    url: "/api/join",
+                    data: {
+                        email_give: $('#useremail').val(),
+                        pw_give: $('#userpw').val(),
+                        nickname_give: $('#nickname').val()
+                    },
+                    success: function (response) {
+                        if (response['result'] == 'success') {
+                            alert('회원가입이 완료되었습니다.')
+                            window.location.href = '/login'
+                        } else {
+                            alert(response['msg'])
+                        }
+                    }
+                })
+            } catch (EmptyElementException) {
+                console.log("잘못된 입력입니다.")
+            }
+        }
+
+        // 비밀번호 일치 확인
+        function checkPassword() {
+            let password = $('#userpw').val()
+            let password_re = $('#userpwcheck').val()
+            if (password != password_re) {
+                $('#check-password').css('display', 'block')
+                throw EmptyElementException
+            }
+        }
     </script>
 </head>
 
@@ -82,32 +120,34 @@
                         <div class="mb-3">
                             <label for="nickname">닉네임</label>
                             <input type="text" class="form-control" id="nickname" placeholder="닉네임" value="" required>
-                            <div class="invalid-feedback">
-                                별명을 입력해주세요.
-                            </div>
+                            <small class="valid" id="empty-nickname" style="color: red; display: none;">
+                                닉네임을 입력해주세요.
+                            </small>
                         </div>
                         <div class="mb-3">
-                            <label for="email">이메일</label>
-                            <input type="email" class="form-control" id="email" placeholder="email" required>
-                            <div class="invalid-feedback">
+                            <label for="useremail">이메일</label>
+                            <input type="email" class="form-control" id="useremail" placeholder="email" required>
+                            <small class="valid" id="empty-email" style="color: red; display: none;">
                                 이메일을 입력해주세요.
-                            </div>
+                            </small>
                         </div>
                         <div class="mb-3">
-                            <label for="password">비밀번호</label>
-                            <input type="password" class="form-control" id="email" placeholder="password" required>
-                            <div class="invalid-feedback">
+                            <label for="userpw">비밀번호</label>
+                            <input type="password" class="form-control" id="userpw" placeholder="password" required>
+                            <small class="valid" id="empty-password" style="color: red; display: none;">
                                 비밀번호를 입력해주세요.
-                            </div>
+                            </small>
                         </div>
                         <div class="mb-3">
-                            <label for="password">비밀번호 확인</label>
-                            <input type="password" class="form-control" id="email" placeholder="password" required>
-                            <div class="invalid-feedback">
-                                비밀번호를 입력해주세요.
-                            </div>
+                            <label for="userpwcheck">비밀번호 확인</label>
+                            <input type="password" class="form-control" id="userpwcheck" placeholder="password"
+                                required>
+                            <small class="valid" id="check-password" style="color: red; display: none;">
+                                비밀번호가 일치하지 않습니다.
+                            </small>
                         </div>
-                        <button onclick="" id="submit-btn" class="btn btn-secondary" type="submit">가입 완료</button>
+                        <button onclick="join()" id="submit-btn" class="btn btn-secondary" type="button">가입
+                            완료</button>
                     </form>
                 </div>
             </div>
