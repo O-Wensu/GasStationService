@@ -88,11 +88,19 @@
         //let id = $
         let star = $("#star").val();
 
+        let today = new Date();
+        let year = today.getFullYear();
+        let month = ("0" + (today.getMonth() + 1)).slice(-2);
+        let day = ("0" + today.getDate()).slice(-2);
+        let dateString = year + "-" + month + "-" + day;
+        console.log(dateString);
+
         let formData = new FormData();
         formData.append("comment_give", comment);
         //id정보 해결시 주석해제
         //formData.append("id_give", id);
         formData.append("star_give", star);
+        formData.append("date_give", dateString);
 
         fetch("/test", { method: "POST", body: formData })
           .then((res) => res.json())
@@ -111,13 +119,14 @@
             rows.forEach((a) => {
               let comment = a["comment"];
               let star = a["star"];
+              let date = a["date"];
 
               let star_repeat = "⭐".repeat(star);
 
               let temp_html = `<a href="#" class="list-group-item list-group-item-action">
                                   <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1 star">${star_repeat}</h5>
-                                    <small class="date">2023-02-18</small>
+                                    <small class="date">${date}</small>
                                   </div>
                                   <div class="d-flex review_container">
                                     <p class="mb-1 comment">${comment}</p>
@@ -126,12 +135,30 @@
                                     <small>작성자: </small>
                                     <small class="writer">바나나우유맛있다</small>
                                   </div>
+                                  <button
+                                  onclick="delete_comment('${comment}')"
+                                  type="button"
+                                  class="btn btn-secondary"
+                                >
+                                  삭제
+                                </button>
                                 </a>`;
               $("#comment").append(temp_html);
             });
             //console.log(data);
             //alert(data["result"]);
           });
+      }
+      function delete_comment(comment) {
+        let formData = new FormData();
+        formData.append("comment_give", comment);
+        fetch("/delete", { method: "POST", body: formData })
+          .then((res) => res.json())
+          .then((data) => {
+            //console.log(data);
+            //alert(data["msg"]);
+          });
+        window.location.reload();
       }
     </script>
   </head>
@@ -159,6 +186,13 @@
               <small>작성자: </small>
               <small class="writer">바나나우유맛있다</small>
             </div>
+            <button
+              onclick="delete_comment()"
+              type="button"
+              class="btn btn-secondary"
+            >
+              삭제
+            </button>
           </a>
           <a href="#" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">

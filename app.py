@@ -6,7 +6,7 @@ import certifi
 
 ca=certifi.where()
 
-client = MongoClient('mongodb+srv://oilshock:oilshock@cluster0.z5pqg3h.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('mongodb+srv://sparta:test@cluster0.zbsepl2.mongodb.net/test')
 db = client.dbsparta
 
 # JWT 토큰 생성을 위한 비밀문자열
@@ -36,17 +36,32 @@ def home() :
 #################################
 ##  리뷰 관련 API               ##
 #################################
+@app.route('/review')
+def review_page() :
+
+    temp = request.args.get('name', '하하하') #주유소이름
+    print(temp)
+    return render_template('review.html')
 
 @app.route('/test', methods=['POST'])
 def web_review_post() :
     comment_receive = request.form['comment_give']
     #id는 어떻게 받아올 수 있을까?
     #id_receive = request.form['id']
+    #주유소 정보
+    
     star_receive = request.form['star_give']
+    date_receive = request.form['date_give']
     #id를 받아올 방법을 알 경우 주석 해제
     #doc = {'comment': comment_receive , 'id' : id_receive, 'star': star_receive}
-    doc = {'comment': comment_receive, 'star': star_receive}
+    doc = {'comment': comment_receive, 'star': star_receive, 'date': date_receive}
     db.review.insert_one(doc)
+    return jsonify({'result' : 'success'})
+
+@app.route('/delete', methods=['POST'])
+def web_review_delete():
+    comment_delete = request.form['comment_give']
+    db.review.delete_one({'comment':comment_delete})
     return jsonify({'result' : 'success'})
 
 @app.route('/test', methods = ['GET']) 
