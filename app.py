@@ -6,7 +6,7 @@ import certifi
 
 ca=certifi.where()
 
-client = MongoClient('mongodb+srv://sparta:test@cluster0.zbsepl2.mongodb.net/test')
+client = MongoClient("mongodb+srv://oilshock:oilshock@cluster0.z5pqg3h.mongodb.net/?retryWrites=true&w=majority")
 db = client.dbsparta
 
 # JWT 토큰 생성을 위한 비밀문자열
@@ -33,17 +33,25 @@ def home() :
     #     return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 	return render_template('index.html')
 
+@app.route('/login')
+def login():
+    msg = request.args.get("msg")
+    return render_template('login.html', msg=msg)
+
+@app.route('/join')
+def register():
+    return render_template('join.html')
+
 #################################
 ##  리뷰 관련 API               ##
 #################################
 @app.route('/review')
 def review_page() :
-
-    temp = request.args.get('name', '하하하') #주유소이름
-    print(temp)
+    # temp = request.args.get('name', '하하하') #주유소이름
+    # print(temp)
     return render_template('review.html')
 
-@app.route('/test', methods=['POST'])
+@app.route('/api/review', methods=['POST'])
 def web_review_post() :
     comment_receive = request.form['comment_give']
     #id는 어떻게 받아올 수 있을까?
@@ -58,25 +66,26 @@ def web_review_post() :
     db.review.insert_one(doc)
     return jsonify({'result' : 'success'})
 
-@app.route('/delete', methods=['POST'])
+@app.route('/api/delete', methods=['POST'])
 def web_review_delete():
     comment_delete = request.form['comment_give']
     db.review.delete_one({'comment':comment_delete})
     return jsonify({'result' : 'success'})
 
-@app.route('/test', methods = ['GET']) 
-def web_review_get() :
-		comment_data = list(db.review.find({},{'_id':False}))
-		return jsonify({'result' : comment_data})
+@app.route('/api/review', methods = ['GET']) 
+def web_review_list() :
+    all_data = list(db.review.find({},{'_id':False}))
+    return jsonify({'review': all_data})
+    # token_receive = request.cookies.get('mytoken')
+    # all_data = list(db.review.find({},{'_id':False}))
 
-@app.route('/login')
-def login():
-    msg = request.args.get("msg")
-    return render_template('login.html', msg=msg)
-
-@app.route('/join')
-def register():
-    return render_template('join.html')
+    # #토큰 없으면 전체 회원 조회
+    # if token_receive is None:
+    #     return jsonify({'all_review': all_data, 'login_review': []})
+    # else:
+    #     email = get_email()
+    #     login_data = list(db.review.find({'email':email},{'_id':False}))
+    #     return jsonify({'all_review': all_data, 'login_review': login_data})
 
 #################################
 ##  로그인 및 회원가입 API      ##
@@ -87,7 +96,6 @@ def register():
 # 저장하기 전에, pw를 sha256 방법으로 암호화해서 저장
 @app.route('/api/join', methods=['POST'])
 def api_register():
-    print("진입")
     email_receive = request.form['email_give']
     pw_receive = request.form['pw_give']
     nickname_receive = request.form['nickname_give']
@@ -134,6 +142,20 @@ def api_login():
     # 찾지 못하면
     else:
         return jsonify({'result': 'fail', 'msg': '로그인 또는 비밀번호가 일치하지 않습니다.'})
+
+# 로그인한 회원 받기
+@app.route('/api/user', methods=['POST'])
+def get_user():
+    token_receive = request.form['token_give']
+    try: 
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        userinfo = db.user.find_one({'email': payload['email']}, {'_id': 0})
+        return jsonify({'result': 'success', 'email': userinfo['email'], 'nickname': userinfo['nickname']})
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
+    except jwt.exceptions.DecodeError:
+        return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
 if __name__ == '__main__' :
 		app.run('0.0.0.0', port = 5000, debug = True)
