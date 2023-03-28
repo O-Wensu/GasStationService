@@ -16,103 +16,209 @@
     <title>가스 스테이션</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .sign-register {
+            width: 10%;
+            margin: 0px 0px 0px auto;
+            margin-top: 2%;
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: left;
+            margin-left: 16.2%;
+            margin-top: 5%;
+        }
+
+        /* 리스트를 감싸는 div */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+
+        /* 리스트 영역 */
+        #list {
+            margin-left: 5%;
+            width: 40%;
+            height: 500px;
+            /* overflow-y: auto; */
+        }
+
+        /* 리스트 아이템 */
+        li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        /* 리스트 아이템 마우스 호버 */
+        li:hover {
+            background-color: #F5F5F5;
+        }
+
+        .review {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .review>button {
+            margin-left: 20px;
+            width: 100px;
+        }
+
+        /* 검색창 */
+        .serach-input {
+            width: 20%;
+            margin-right: 2%;
+            float: left;
+            margin-top: 1%;
+        }
+
+        /* 검색창 버튼 */
+        .search-container>button {
+            float: left;
+            background-color: #1AAE9F;
+            border-color: #1AAE9F;
+            margin-right: 46%;
+        }
+
+        .user {
+            color: black;
+            text-decoration: none;
+        }
+
+        .mb-1 {
+            margin-top: 3%;
+        }
+    </style>
+
+    <script>
+        function makeList(infoName, infoAddress, infoPrice) {
+            let gasoline, diesel
+            infoPrice.forEach((e) => {
+                if (e['PRODCD'] == 'B027') {
+                    gasoline = e['PRICE']
+                }
+                if (e['PRODCD'] == 'D047') {
+                    diesel = e['PRICE']
+                }
+            })
+            let temphtml = `<a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1 station-name">${infoName}</h5>
+                                </div>
+                                <div class="d-flex price-container">
+                                    <p class="mb-1 gasoline-price" style="margin-right: 5%;">휘발유: ${gasoline}</p>
+                                    <p class="mb-1 diesel-price">경유: ${diesel}</p>
+                                </div>
+                                <small class="station-address">${infoAddress}</small>
+                            </a>`
+            $('#station-list').append(temphtml)
+        }
+    </script>
 </head>
-<style>
-    * {
-        font-family: 'Gowun Dodum', sans-serif;
-    }
-
-    .sign-register {
-        width: 10%;
-        margin: 0px 0px 0px auto;
-        margin-top: 2%;
-    }
-
-    .search-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: left;
-        margin-left: 16.2%;
-        margin-top: 5%;
-    }
-
-    /* 지도와 리스트를 감싸는 div */
-    .container {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    /* 지도 영역 */
-    #map {
-        width: 50%;
-        height: 500px;
-    }
-
-    /* 리스트 영역 */
-    #list {
-        margin-left: 5%;
-        width: 40%;
-        height: 500px;
-        /* overflow-y: auto; */
-    }
-
-    /* 리스트 아이템 */
-    li {
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
-    }
-
-    /* 리스트 아이템 마우스 호버 */
-    li:hover {
-        background-color: #F5F5F5;
-    }
-
-    .review {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .review>button {
-        margin-left: 20px;
-        width: 100px;
-    }
-
-    /* 검색창 */
-    .serach-input {
-        width: 20%;
-        margin-right: 2%;
-        float: left;
-        margin-top: 1%;
-    }
-
-    /* 검색창 버튼 */
-    .search-container>button {
-        float: left;
-        background-color: #1AAE9F;
-        border-color: #1AAE9F;
-        margin-right: 46%;
-    }
-
-    .user {
-        color: black;
-        text-decoration: none;
-    }
-
-    .mb-1 {
-        margin-top: 3%;
-    }
-
-    #dropdownMenuButton1 {
-        background-color: #1AAE9F;
-        border-color: #1AAE9F;
-    }
-</style>
 
 <body>
+    <div id="map" style="width:0%;height:0px;"></div>
+
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=beca46d4e7e23adeaca7d364f08bcb89&libraries=services"></script>
+    <script>
+        // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
+        var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
+        var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+            mapOption = {
+                center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+                level: 3 // 지도의 확대 레벨
+            };
+
+        // 지도를 생성합니다    
+        var map = new kakao.maps.Map(mapContainer, mapOption);
+
+        // 장소 검색 객체를 생성합니다
+        var ps = new kakao.maps.services.Places();
+
+        // 키워드로 장소를 검색합니다
+        ps.keywordSearch('영등포구', placesSearchCB);
+
+        // 키워드 검색 완료 시 호출되는 콜백함수 입니다
+        function placesSearchCB(data, status, pagination) {
+            if (status === kakao.maps.services.Status.OK) {
+
+                // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+                // LatLngBounds 객체에 좌표를 추가합니다
+                var bounds = new kakao.maps.LatLngBounds();
+
+                for (var i = 0; i < data.length; i++) {
+                    displayMarker(data[i]);
+                    bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+                }
+
+                // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+                map.setBounds(bounds);
+                var centerLat = bounds.getNorthEast().getLat() - (bounds.getNorthEast().getLat() - bounds.getSouthWest().getLat()) / 2
+                var centerLng = bounds.getNorthEast().getLng() - (bounds.getNorthEast().getLng() - bounds.getSouthWest().getLng()) / 2
+
+                const options = {
+                    method: 'GET',
+                    headers: { accept: 'application/json', appKey: 'e8wHh2tya84M88aReEpXCa5XTQf3xgo01aZG39k5' }
+                };
+
+                var locationTransform
+                var uniIdList = new Array();
+                fetch(`https://apis.openapi.sk.com/tmap/geo/coordconvert?version=1&lat=${centerLat}&lon=${centerLng}&fromCoord=WGS84GEO&toCoord=KATECH`,
+                    options)
+                    .then(response => response.json())
+                    .then(response => locationTransform = response['coordinate'])
+                    .then(response => fetch(`https://www.opinet.co.kr/api/aroundAll.do?code=F230328087&x=${locationTransform['lon']}&y=${locationTransform['lat']}&radius=5000&sort=1&prodcd=B027&out=json`).then(res => res.json()).then(data => {
+                        let result = data['RESULT']['OIL']
+                        $('#station-list').empty()
+                        result.forEach((e) => {
+                            let uniId = e['UNI_ID']
+                            fetch(`https://www.opinet.co.kr/api/detailById.do?code=F230328087&id=${uniId}&out=json`).then(res => res.json()).then(data => {
+                                let information = data['RESULT']['OIL']
+                                information.forEach((info) => {
+                                    let infoName = info['OS_NM']
+                                    let infoAddress = info['NEW_ADR']
+                                    let infoPrice = info['OIL_PRICE']
+                                    makeList(infoName, infoAddress, infoPrice)
+                                })
+                            })
+                        })
+                    }))
+                    .catch(err => console.error(err));
+
+            }
+        }
+        // 지도에 마커를 표시하는 함수입니다
+        function displayMarker(place) {
+
+            // 마커를 생성하고 지도에 표시합니다
+            var marker = new kakao.maps.Marker({
+                map: map,
+                position: new kakao.maps.LatLng(place.y, place.x)
+            });
+
+            // 마커에 클릭이벤트를 등록합니다
+            kakao.maps.event.addListener(marker, 'click', function () {
+                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+                infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+                infowindow.open(map, marker);
+            });
+        }
+    </script>
+
     <div class="sign-register">
         <a href="#" class="user login" style="margin: 2%;">로그인</a>
         <a href="#" class="user register">회원가입</a>
@@ -124,28 +230,13 @@
                 aria-describedby="basic-addon1">
         </div>
         <button onclick="" id="submit-btn" class="btn btn-secondary" type="submit">검색</button>
-
-        <!-- 드롭다운 -->
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                data-bs-toggle="dropdown" aria-expanded="false">
-                정렬
-            </button>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">휘발유</a></li>
-                <li><a class="dropdown-item" href="#">경유</a></li>
-            </ul>
-        </div>
     </div>
 
-    <!-- 지도와 리스트를 감싸는 div -->
+    <!-- 리스트를 감싸는 div -->
     <div class="container">
-        <!-- 지도 영역 -->
-        <div id="map">
-        </div>
         <!-- 리스트 영역 -->
         <div id="list">
-            <div class="list-group">
+            <div class="list-group" id="station-list">
                 <a href="#" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
@@ -182,18 +273,6 @@
             </div>
         </div>
     </div>
-    <!-- Google Maps API를 사용하여 지도를 표시 -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-    <script>
-        function initMap() {
-            var center = { lat: 37.5665, lng: 126.978 }; // 지도 중심 좌표
-            var map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 12, // 지도 확대/축소 레벨
-                center: center, // 지도 중심 좌표
-            });
-        }
-    </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 
 </html>
