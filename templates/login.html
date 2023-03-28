@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -10,86 +11,114 @@
     crossorigin="anonymous"></script>
   <title>너의 기름은?</title>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <style>
+    * {
+      font-family: 'Gowun Dodum', sans-serif;
+    }
+
+    .logo {
+      height: 300px;
+      width: 60%;
+      margin: auto auto 50px auto;
+      padding: 20px 20px 20px 20px;
+
+      /* 그림자 */
+      box-shadow: 0px 0px 3px 0px gray;
+      background-image: linear-gradient(0deg,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.5)),
+        url("https://cdnweb01.wikitree.co.kr/webdata/editor/202009/21/img_20200921132619_15e14b27.webp");
+      background-position: center;
+      background-size: cover;
+    }
+
+    .login {
+      width: 300px;
+      margin: 20px auto 20px auto;
+    }
+
+    .login>button {
+      width: 300px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      margin-top: 20px;
+    }
+
+    .sign-in {
+      width: 300px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: right;
+      color: black;
+
+      margin-top: 20px;
+    }
+
+    .sign-in :hover {
+      color: darkgray;
+    }
+
+    #submit-btn {
+      background-color: #1AAE9F;
+      border-color: #1AAE9F;
+    }
+
+    #title {
+      font-size: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+  <script>
+    // 로그인
+    // 회원 정보와 일치하면 토큰 발급
+    function login() {
+      $.ajax({
+        type: "POST",
+        url: "/api/login",
+        data: {
+          email_give: $('#useremail').val(),
+          pw_give: $('#userpw').val()
+        },
+        success: function (response) {
+          if (response['result'] == 'success') {
+            // 토큰을 mytoken이라는 키 값으로 쿠키에 저장
+            $.cookie('mytoken', response['token']);
+            alert('로그인 성공')
+            window.location.href = '/'
+          } else {
+            // 로그인 실패시 에러 메시지
+            alert(response['msg'])
+          }
+        }
+      })
+    }
+  </script>
+
 </head>
-<style>
-  * {
-    font-family: 'Gowun Dodum', sans-serif;
-  }
 
-  .logo {
-    height: 300px;
-    width: 60%;
-    margin: auto auto 50px auto;
-    padding: 20px 20px 20px 20px;
-
-    /* 그림자 */
-    box-shadow: 0px 0px 3px 0px gray;
-    background-image: linear-gradient(0deg,
-        rgba(0, 0, 0, 0.5),
-        rgba(0, 0, 0, 0.5)),
-      url("https://cdnweb01.wikitree.co.kr/webdata/editor/202009/21/img_20200921132619_15e14b27.webp");
-    background-position: center;
-    background-size: cover;
-  }
-
-  .login {
-    width: 300px;
-    margin: 20px auto 20px auto;
-  }
-
-  .login>button {
-    width: 300px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-
-    margin-top: 20px;
-  }
-
-  .sign-in {
-    width: 300px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: right;
-    color: black;
-
-    margin-top: 20px;
-  }
-
-  .sign-in :hover {
-    color: darkgray;
-  }
-
-  #submit-btn {
-    background-color: #1AAE9F;
-    border-color: #1AAE9F;
-  }
-
-  #title {
-    font-size: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-</style>
 
 <body>
   <div class="logo"></div>
   <div class="login">
     <h4 id="title" class="mb-3">로그인</h4>
     <div class="mb-3">
-      <label for="exampleFormControlInput1" class="form-label">이메일</label>
-      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="email" />
+      <label for="useremail" class="form-label">이메일</label>
+      <input type="email" class="form-control" id="useremail" placeholder="email"/>
     </div>
     <div class="mb-3">
-      <label for="exampleFormControlInput1" class="form-label">비밀번호</label>
-      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="password" />
+      <label for="userpw" class="form-label">비밀번호</label>
+      <input type="password" class="form-control" id="userpw" placeholder="password"/>
     </div>
-    <button type="button" class="btn btn-secondary" id="submit-btn">로그인</button>
-    <a style="text-decoration: none" href="" for="exampleFormControlInput1" class="sign-in">회원가입</a>
+    <button onclick="login()" type="button" class="btn btn-secondary" id="submit-btn">로그인</button>
+    <a style="text-decoration: none" href="/join" for="exampleFormControlInput1" class="sign-in">회원가입</a>
   </div>
 </body>
 
