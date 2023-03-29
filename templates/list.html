@@ -35,7 +35,7 @@
             flex-direction: row;
             align-items: center;
             justify-content: left;
-            margin-left: 16.2%;
+            margin-left: 49.5%;
             margin-top: 5%;
         }
 
@@ -48,7 +48,7 @@
 
         /* 리스트 영역 */
         #list {
-            margin-left: 5%;
+            margin-left: 30%;
             width: 40%;
             height: 500px;
             /* overflow-y: auto; */
@@ -65,7 +65,7 @@
             background-color: #F5F5F5;
         }
 
-        .review {
+        /* .review {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -76,14 +76,14 @@
         .review>button {
             margin-left: 20px;
             width: 100px;
-        }
+        } */
 
         /* 검색창 */
-        .serach-input {
+        .search-input {
             width: 20%;
             margin-right: 2%;
             float: left;
-            margin-top: 1%;
+            margin-top: 1.5%;
         }
 
         /* 검색창 버튼 */
@@ -103,7 +103,8 @@
             margin-top: 3%;
         }
     </style>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script>
         // 메인페이지 접속시 로그인 상태 여부에 따라 UI 변경
         $(document).ready(function () {
@@ -136,7 +137,7 @@
             window.location.reload()
         }
 
-        function makeList(infoName, infoAddress, infoPrice) {
+        function makeList(infoId, infoName, infoAddress, infoPrice, lat, lon) {
             let gasoline, diesel
             infoPrice.forEach((e) => {
                 if (e['PRODCD'] == 'B027') {
@@ -146,7 +147,10 @@
                     diesel = e['PRICE']
                 }
             })
-            let temphtml = `<a href="" class="list-group-item list-group-item-action">
+            let replacaeAddr = infoAddress.replaceAll(' ', '+')
+            let replacaeName = infoName.replaceAll(' ', '+')
+            let url = "/station/review?code=" + infoId + "&name=" + replacaeName + "&addr=" + replacaeAddr + "&gasoline=" + gasoline + "&diesel=" + diesel + "&lat=" + lat + "&lon=" + lon
+            let temphtml = `<a href=${url} class="list-group-item list-group-item-action">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1 station-name">${infoName}</h5>
                                 </div>
@@ -158,11 +162,19 @@
                             </a>`
             $('#station-list').append(temphtml)
         }
+
+        //검색
+        function search() {
+            let keyword = $('#search-input2').val()
+            let replaceKeyword = keyword.replaceAll(' ', '+')
+            console.log(replaceKeyword)
+            window.location.href = "/api/search?location=" + replaceKeyword
+        }
     </script>
 </head>
 
 <body>
-        <!-- 매니저님이랑한 코드
+    <!-- 매니저님이랑한 코드
     {% for k in keyword %}
     {{k['name']}}, {{k['price']}}
     {% endfor %} -->
@@ -206,8 +218,11 @@
 
                 // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
                 map.setBounds(bounds);
-                var centerLat = bounds.getNorthEast().getLat() - (bounds.getNorthEast().getLat() - bounds.getSouthWest().getLat()) / 2
-                var centerLng = bounds.getNorthEast().getLng() - (bounds.getNorthEast().getLng() - bounds.getSouthWest().getLng()) / 2
+                var position = map.getCenter();
+                var centerLat = position.getLat()
+                var centerLng = position.getLng()
+                // var centerLat = bounds.getNorthEast().getLat() - (bounds.getNorthEast().getLat() - bounds.getSouthWest().getLat()) / 2
+                // var centerLng = bounds.getNorthEast().getLng() - (bounds.getNorthEast().getLng() - bounds.getSouthWest().getLng()) / 2
 
                 const options = {
                     method: 'GET',
@@ -221,7 +236,7 @@
                     options)
                     .then(response => response.json())
                     .then(response => locationTransform = response['coordinate'])
-                    .then(response => fetch(`https://www.opinet.co.kr/api/aroundAll.do?code=${code}&x=${locationTransform['lon']}&y=${locationTransform['lat']}&radius=1500&sort=1&prodcd=B027&out=json`)
+                    .then(response => fetch(`https://www.opinet.co.kr/api/aroundAll.do?code=${code}&x=${locationTransform['lon']}&y=${locationTransform['lat']}&radius=2000&sort=1&prodcd=B027&out=json`)
                         .then(res => res.json())
                         .then(data => {
                             let result = data['RESULT']['OIL']
@@ -236,7 +251,9 @@
                                             let infoName = info['OS_NM']
                                             let infoAddress = info['NEW_ADR']
                                             let infoPrice = info['OIL_PRICE']
-                                            makeList(infoName, infoAddress, infoPrice)
+                                            let lat = info['GIS_X_COOR']
+                                            let lon = info['GIS_Y_COOR']
+                                            makeList(uniId, infoName, infoAddress, infoPrice, lat, lon)
                                         })
                                     })
                             })
@@ -273,11 +290,11 @@
     </div>
     <div class="search-container">
         <!-- 검색창 -->
-        <div class="input-group mb-3 serach-input">
-            <input type="text" class="form-control" placeholder="검색" aria-label="Username"
+        <div class="input-group mb-3 search-input">
+            <input id="search-input2" type="text" class="form-control" placeholder="검색" aria-label="Username"
                 aria-describedby="basic-addon1">
         </div>
-        <button onclick="" id="submit-btn" class="btn btn-secondary" type="submit">검색</button>
+        <button onclick="search()" id="submit-btn" class="btn btn-secondary" type="submit">검색</button>
     </div>
 
     <!-- 리스트를 감싸는 div -->
@@ -288,29 +305,6 @@
                 <a href="#" class="list-group-item list-group-item-action">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
-                        <!-- <small class="date">2023-03-28</small> -->
-                    </div>
-                    <div class="d-flex price-container">
-                        <p class="mb-1 gasoline-price" style="margin-right: 5%;">휘발유 최저: 1,533</p>
-                        <p class="mb-1 diesel-price">경유: 1,533</p>
-                    </div>
-                    <small class="station-address">경기 파주시 월롱면 통일로 909</small>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
-                        <!-- <small class="date">2023-03-28</small> -->
-                    </div>
-                    <div class="d-flex price-container">
-                        <p class="mb-1 gasoline-price" style="margin-right: 5%;">휘발유 최저: 1,533</p>
-                        <p class="mb-1 diesel-price">경유: 1,533</p>
-                    </div>
-                    <small class="station-address">경기 파주시 월롱면 통일로 909</small>
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
-                        <!-- <small class="date">2023-03-28</small> -->
                     </div>
                     <div class="d-flex price-container">
                         <p class="mb-1 gasoline-price" style="margin-right: 5%;">휘발유 최저: 1,533</p>

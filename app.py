@@ -7,7 +7,7 @@ import certifi
 
 ca=certifi.where()
 
-client = MongoClient("mongodb+srv://oilshock:oilshock@cluster0.z5pqg3h.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://sparta:test@cluster0.dfkb4ze.mongodb.net/?retryWrites=true&w=majority")
 db = client.dbsparta
 
 # JWT 토큰 생성을 위한 비밀문자열
@@ -47,10 +47,10 @@ def station_list() :
 
 @app.route('/api/search', methods=['GET'])
 def serach_location():
-    print("진입")
-    keyword_receive = request.args.get('location')
-    print(keyword_receive)
-    return render_template('list.html', keyword=keyword_receive)
+   print("진입")
+   keyword_receive = request.args.get('location')
+   print(keyword_receive)
+   return render_template('list.html', keyword=keyword_receive)
 
 # @app.route('/api/search', methods=['GET'])
 # def serach_location():
@@ -67,6 +67,21 @@ def serach_location():
 ##  리뷰 관련 API               ##
 #################################
 
+@app.route('/station/review', methods=['GET'])
+def station_review() :
+    print("진입")
+    dic = { 
+        'code': request.args.get('code'),
+        'name': request.args.get('name'),
+        'addr': request.args.get('addr'),        
+        'gasoline': request.args.get('gasoline'),
+        'diesel': request.args.get('diesel'),
+        'lat': request.args.get('lat'),
+        'lon': request.args.get('lon')
+    }
+    print(dic)
+    return render_template('review.html', data = dic)
+
 #리뷰 저장
 @app.route('/api/review', methods=['POST'])
 def web_review_post() :
@@ -75,13 +90,15 @@ def web_review_post() :
     star_receive = request.form['star_give']
     date_receive = request.form['date_give']
     nickname_receive = request.form['nickname_give']
+    code_receive = request.form['code_give']#######################
 
     doc = {
         'created_at': date_receive,
         'star': star_receive,
         'comment': comment_receive,
         'nickname': nickname_receive,
-        'email': email_receive
+        'email': email_receive,
+        'code' : code_receive     ###############################
     }
     db.review.insert_one(doc)
     return jsonify({'result' : 'success'})
@@ -193,4 +210,4 @@ def get_user():
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
 if __name__ == '__main__' :
-		app.run('0.0.0.0', port = 5000, debug = True)
+		app.run('0.0.0.0', port = 5001, debug = True)

@@ -44,9 +44,6 @@
     #map {
       width: 100%;
       height: 400px;
-      background-image: url("https://t1.daumcdn.net/cfile/tistory/9968D2465E832E5A34");
-      background-position: center;
-      background-size: cover;
     }
 
     #station-list {
@@ -174,6 +171,7 @@
         let email = user["email"];
         let nickname = user["nickname"];
         let star = $("#star").val();
+        let code = $("#keyword_receive").text(); /////////////////
 
         //리뷰 작성일
         let today = new Date();
@@ -189,6 +187,7 @@
         formData.append("comment_give", comment);
         formData.append("email_give", email);
         formData.append("nickname_give", nickname);
+        formData.append("code_give", code);///////////////////////////
 
         fetch("/api/review", { method: "POST", body: formData })
           .then((res) => res.json())
@@ -301,6 +300,8 @@
           let all_id = data["review_id"];
           let count = 0;
           all_review.forEach((a) => {
+            let code = a["code"];/////////////////////////
+            if (code == "{{ data['code'] }}") {
             let date = a["created_at"];
             let star = a["star"];
             let comment = a["comment"];
@@ -339,6 +340,7 @@
               otherReview(date, star, comment, nickname, email, star_repeat);
             }
             count++;
+          }
           });
         });
     }
@@ -431,6 +433,7 @@
 </head>
 
 <body>
+  <!-- <h2 id="keyword_receive">{{keyword_receive}}</h2>############################################################지워지워지워 -->
   <button onclick="location.href='/'" id="title" type="button" class="btn btn-login">
     메인화면
   </button>
@@ -455,8 +458,8 @@
         src="//dapi.kakao.com/v2/maps/sdk.js?appkey=beca46d4e7e23adeaca7d364f08bcb89"></script>
       <script>
         var locationMap = new Array()
-        locationMap.push(549863.69634180)
-        locationMap.push(306951.28328353)
+        locationMap.push("{{ data['lon'] }}")
+        locationMap.push("{{ data['lat'] }}")
 
         const options = {
           method: 'GET',
@@ -473,15 +476,15 @@
         <div class="list-group">
           <a href="" class="list-group-item list-group-item-action">
             <div class="d-flex w-100 justify-content-between">
-              <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
+              <h5 class="mb-1 station-name">{{ data['name'] }}</h5>
             </div>
             <div class="d-flex price-container">
               <p class="mb-1 gasoline-price" style="margin-right: 5%">
-                휘발유 최저: 1,533
+                휘발유: {{ data['gasoline'] }}
               </p>
-              <p class="mb-1 diesel-price">경유: 1,533</p>
+              <p class="mb-1 diesel-price">경유: {{ data['diesel'] }}</p>
             </div>
-            <small class="station-address">경기 파주시 월롱면 통일로 909</small>
+            <small class="station-address">{{ data['addr'] }}</small>
           </a>
         </div>
       </div>

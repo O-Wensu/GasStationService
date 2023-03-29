@@ -34,10 +34,12 @@
 
 		.logo {
 			height: 300px;
+			width: 60%;
 			margin: 20px auto 20px auto;
 			padding: 20px 20px 20px 20px;
-			/* 그림자 */
-			box-shadow: 0px 0px 3px 0px gray;
+			background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/34dd4b52-27b0-4682-9fd7-5b8c591e8d45/dbl8sig-02ba87e3-403b-488c-92da-8670a7ef454f.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzM0ZGQ0YjUyLTI3YjAtNDY4Mi05ZmQ3LTViOGM1OTFlOGQ0NVwvZGJsOHNpZy0wMmJhODdlMy00MDNiLTQ4OGMtOTJkYS04NjcwYTdlZjQ1NGYuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.Vi2cxiv78VnkZg1R51JEIxyLKe4yQuWbTvZ850W2XAo');
+			background-position: center;
+			background-size: cover;
 		}
 
 		.sign-register {
@@ -89,7 +91,8 @@
 		//검색
 		function search() {
 			let keyword = $('#search-input').val()
-			window.location.href="/api/search?location=" + keyword
+			let replaceKeyword = keyword.replaceAll(' ', '+')
+			window.location.href="/api/search?location=" + replaceKeyword
 			// $.ajax({
 			// 	type: "GET",
 			// 	url: "/api/search?location=" + keyword,
@@ -117,7 +120,7 @@
 	</div>
 
 	<div class="logo">
-		<h1>LOGO</h1>
+		
 	</div>
 
 	<div class="container">
