@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request, session, redirect, url_for
 app = Flask(__name__)
 
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 import certifi
 
@@ -72,26 +73,23 @@ def web_review_post() :
 
 @app.route('/api/delete', methods=['POST'])
 def web_review_delete():
-    comment_delete = request.form['comment_give']
-    db.review.delete_one({'comment':comment_delete})
-    return jsonify({'result' : 'success'})
+    id_receive = request.form['id_give']
+    obj_id = ObjectId(id_receive)
+    db.review.delete_one({'_id':obj_id})
+    return jsonify({'result': 'success', 'msg': '삭제 완료'})
 
 @app.route('/api/review', methods = ['GET']) 
 def web_review_list() :
-    
-    all_data = list(db.review.find({},{'_id':False}))
-    return jsonify({'review': all_data})
-    # token_receive = request.cookies.get('mytoken')
-    # all_data = list(db.review.find({},{'_id':False}))
+    all_data = list(db.review.find({},{'_id': False}))
+    all_id = get_reviewId()
+    return jsonify({'review': all_data, 'review_id': all_id})
 
-    # #토큰 없으면 전체 회원 조회
-    # if token_receive is None:
-    #     return jsonify({'all_review': all_data, 'login_review': []})
-    # else:
-    #     email = get_email()
-    #     login_data = list(db.review.find({'email':email},{'_id':False}))
-    #     return jsonify({'all_review': all_data, 'login_review': login_data})
-
+# 모든 리뷰의 오브젝트ID -> string 변환하여 가져오기
+def get_reviewId():
+    id_reviews = list(db.review.find({},{'_id': True}))
+    for data in id_reviews:
+        data["_id"] = str(data["_id"])
+    return id_reviews
 #################################
 ##  로그인 및 회원가입 API      ##
 #################################
@@ -148,10 +146,10 @@ def api_login():
     else:
         return jsonify({'result': 'fail', 'msg': '로그인 또는 비밀번호가 일치하지 않습니다.'})
 
-# 로그인한 회원 받기
-@app.route('/api/user', methods=['POST'])
+# 로그인한 회원 정보 받기
+@app.route('/api/user', methods=['GET'])
 def get_user():
-    token_receive = request.form['token_give']
+    token_receive = request.cookies.get('mytoken')
     try: 
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         userinfo = db.user.find_one({'email': payload['email']}, {'_id': 0})
