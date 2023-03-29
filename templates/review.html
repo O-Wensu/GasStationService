@@ -26,6 +26,11 @@
       margin: 15px 10px 20px auto;
     }
 
+    .gas-container {
+      width: 50%;
+      height: 500px;
+    }
+
     /* 지도와 리스트를 감싸는 div */
     .container {
       display: flex;
@@ -37,17 +42,22 @@
 
     /* 지도 영역 */
     #map {
-      width: 50%;
-      height: 500px;
+      width: 100%;
+      height: 400px;
       background-image: url("https://t1.daumcdn.net/cfile/tistory/9968D2465E832E5A34");
       background-position: center;
       background-size: cover;
     }
 
+    #station-list {
+      width: 100%;
+      margin-top: 10px;
+    }
+
     /* 리스트 영역 */
     #list {
       width: 40%;
-      height: 500px;
+      height: 400px;
       /* overflow-y: auto; */
     }
 
@@ -92,6 +102,7 @@
     #list {
       margin-left: 3%;
     }
+
   </style>
   <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -317,7 +328,24 @@
   <!-- 지도와 리스트를 감싸는 div -->
   <div class="container">
     <!-- 지도 영역 -->
-    <div id="map"></div>
+    <div class="gas-container">
+      <div id="map"></div>
+      <!-- 리스트를 감싸는 div -->
+      <div id="station-list">
+        <div class="list-group">
+          <a href="" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1 station-name">GS칼텍스 파주필립스 주유소</h5>
+            </div>
+            <div class="d-flex price-container">
+              <p class="mb-1 gasoline-price" style="margin-right: 5%;">휘발유 최저: 1,533</p>
+              <p class="mb-1 diesel-price">경유: 1,533</p>
+            </div>
+            <small class="station-address">경기 파주시 월롱면 통일로 909</small>
+          </a>
+        </div>
+      </div>
+    </div>
     <!-- 리스트 영역 -->
     <div id="list">
       <div id="comment" class="list-group">
