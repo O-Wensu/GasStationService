@@ -7,7 +7,7 @@ import certifi
 
 ca=certifi.where()
 
-client = MongoClient("mongodb+srv://oilshock:oilshock@cluster0.z5pqg3h.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://sparta:test@cluster0.zbsepl2.mongodb.net/test")
 db = client.dbsparta
 
 # JWT 토큰 생성을 위한 비밀문자열
@@ -66,6 +66,20 @@ def web_review_delete():
     obj_id = ObjectId(id_receive)
     db.review.delete_one({'_id':obj_id})
     return jsonify({'result': 'success', 'msg': '삭제 완료'})
+
+########################리뷰수정_구현중############################
+#리뷰 수정
+@app.route('/api/update', methods=['POST'])
+def web_review_update():
+    id_receive = request.form['id_give']
+    obj_id = ObjectId(id_receive)
+    print(obj_id)
+    star_receive = request.form['star_give']
+    #email_receive = request.form['email_give']
+    comment_receive = request.form['comment_give']
+    db.review.update_one({'_id':obj_id}, {"$set":{"comment": comment_receive, "star":star_receive}},upsert=True)
+    return jsonify({'result': 'success', 'msg': '수정 완료'})
+#################################################################
 
 #리뷰 조회
 @app.route('/api/review', methods = ['GET']) 
