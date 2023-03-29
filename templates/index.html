@@ -92,20 +92,7 @@
 		function search() {
 			let keyword = $('#search-input').val()
 			let replaceKeyword = keyword.replaceAll(' ', '+')
-			window.location.href="/api/search?location=" + replaceKeyword
-			// $.ajax({
-			// 	type: "GET",
-			// 	url: "/api/search?location=" + keyword,
-			// 	// data: {"key" : keyword},
-			// 	cache: false,
-			// 	success: function (response) {
-			// 		// alert('success')
-			// 	},
-			// 	error: function (e) {
-			// 		// alert('error');
-			// 		// alert(e.responseText);
-			// 	}
-			// });
+			window.location.href="/list?location=" + replaceKeyword
 		}
 	</script>
 </head>

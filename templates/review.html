@@ -104,6 +104,7 @@
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script>
     $(document).ready(function () {
+      console.log($.cookie("mytoken"))
       loginStateUI();
       showReview();
     });
@@ -123,6 +124,7 @@
     // 로그인 여부
     function isLogin() {
       let token = $.cookie("mytoken");
+      console.log(token)
       if (token == null) {
         return false;
       }
@@ -171,7 +173,7 @@
         let email = user["email"];
         let nickname = user["nickname"];
         let star = $("#star").val();
-        let code = $("#keyword_receive").text(); /////////////////
+        let code = "{{ data['code'] }}"
 
         //리뷰 작성일
         let today = new Date();
@@ -179,7 +181,6 @@
         let month = ("0" + (today.getMonth() + 1)).slice(-2);
         let day = ("0" + today.getDate()).slice(-2);
         let dateString = year + "-" + month + "-" + day;
-        console.log(dateString);
 
         let formData = new FormData();
         formData.append("date_give", dateString);
@@ -187,7 +188,7 @@
         formData.append("comment_give", comment);
         formData.append("email_give", email);
         formData.append("nickname_give", nickname);
-        formData.append("code_give", code);///////////////////////////
+        formData.append("code_give", code);
 
         fetch("/api/review", { method: "POST", body: formData })
           .then((res) => res.json())
@@ -200,7 +201,6 @@
 
     //리뷰 삭제
     function delete_comment(id) {
-      console.log("리뷰 아이디:" + id);
       let formData = new FormData();
       formData.append("id_give", id);
       fetch("/api/delete", { method: "POST", body: formData })
@@ -214,7 +214,6 @@
     function showUpdateUi(id, nickname, comment) {
       $("#comment").empty();
       $("div.comment-write").empty();
-      console.log(id);
       let temp_html = `<a href="#" class="list-group-item list-group-item-action">
                           <div class="d-flex w-100 justify-content-between">
                             <label for="inputCity" class="form-label">
@@ -272,8 +271,8 @@
         let star = $("#star").val();
 
         $.ajax({
-          type: "POST", // 변경
-          url: "/api/update", // 변경
+          type: "POST", 
+          url: "/api/update", 
           data: {
             id_give: review_id,
             star_give: star,
@@ -300,7 +299,7 @@
           let all_id = data["review_id"];
           let count = 0;
           all_review.forEach((a) => {
-            let code = a["code"];/////////////////////////
+            let code = a["code"];
             if (code == "{{ data['code'] }}") {
             let date = a["created_at"];
             let star = a["star"];
@@ -313,7 +312,6 @@
             if (isLogin()) {
               let user = getUserInfo();
               let userEmail = user["email"];
-              console.log(userEmail);
 
               //로그인한 회원이 쓴 리뷰인지 판단
               if (userEmail == email) {
@@ -433,15 +431,14 @@
 </head>
 
 <body>
-  <!-- <h2 id="keyword_receive">{{keyword_receive}}</h2>############################################################지워지워지워 -->
   <button onclick="location.href='/'" id="title" type="button" class="btn btn-login">
     메인화면
   </button>
   <div class="sign-register">
-    <button onclick="location.href='login'" id="login" type="button" class="btn btn-login" style="display: block">
+    <button onclick="location.href='/login'" id="login" type="button" class="btn btn-login" style="display: block">
       로그인
     </button>
-    <button onclick="location.href='join'" id="join" type="button" class="btn btn-join" style="display: block">
+    <button onclick="location.href='/join'" id="join" type="button" class="btn btn-join" style="display: block">
       회원가입
     </button>
     <button onclick="logout()" id="logout" type="button" class="btn btn-join" style="display: none">
@@ -457,6 +454,7 @@
       <script type="text/javascript"
         src="//dapi.kakao.com/v2/maps/sdk.js?appkey=beca46d4e7e23adeaca7d364f08bcb89"></script>
       <script>
+        // 좌표
         var locationMap = new Array()
         locationMap.push("{{ data['lon'] }}")
         locationMap.push("{{ data['lat'] }}")
@@ -468,10 +466,11 @@
 
         fetch(`https://apis.openapi.sk.com/tmap/geo/coordconvert?version=1&lat=${locationMap[0]}&lon=${locationMap[1]}&fromCoord=KATECH&toCoord=WGS84GEO`, options)
           .then(response => response.json())
-          .then(response => makeMap(response['coordinate']))
+          .then(response => makeMap(response['coordinate'])) // 지도 출력
           .catch(err => console.error(err))
       </script>
       <!-- 리스트를 감싸는 div -->
+      <!-- 주유소 정보 출력 -->
       <div id="station-list">
         <div class="list-group">
           <a href="" class="list-group-item list-group-item-action">
@@ -492,49 +491,7 @@
     <!-- 리스트 영역 -->
     <div id="list">
       <div id="comment" class="list-group">
-        <!-- <a href="#" class="list-group-item list-group-item-action">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1 star">⭐⭐⭐⭐⭐</h5>
-            <small class="date">2023-02-18</small>
-          </div>
-          <div class="d-flex review_container">
-            <p class="mb-1 comment">여기 주유 맛집ㅋㅋㅋ</p>
-          </div>
-          <div class="d-flex">
-            <small>작성자: </small>
-            <small class="writer">나는1</small>
-            <div class="d-flex" style="margin: 0px 0px 0px auto;">
-              <small id="update-btn" onclick="update_comment()" style="display: block;">수정</small>
-              <small id="delete-btn" onclick="delete_comment()" style="margin-left: 15px; display: block;">삭제</small>
-            </div>
-          </div>
-        </a>
-        <a href="#" class="list-group-item list-group-item-action">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1 star">⭐⭐⭐⭐⭐</h5>
-            <small class="date">2023-03-05</small>
-          </div>
-          <div class="d-flex review_container">
-            <p class="mb-1 comment">금손으로 세차하시네요</p>
-          </div>
-          <div class="d-flex">
-            <small>작성자: </small>
-            <small class="writer">나는2</small>
-          </div>
-        </a>
-        <a href="#" class="list-group-item list-group-item-action">
-          <div class="d-flex w-100 justify-content-between">
-            <h5 class="mb-1 star">⭐⭐</h5>
-            <small class="date">2023-03-28</small>
-          </div>
-          <div class="d-flex review_container">
-            <p class="mb-1 comment">ㅋㅋㅋ차에 기스 실화냐?</p>
-          </div>
-          <div class="d-flex">
-            <small>작성자: </small>
-            <small class="writer">나는3</small>
-          </div>
-        </a> -->
+        
       </div>
       <div class="comment-write">
         <div class="mb-3">
@@ -556,19 +513,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Google Maps API를 사용하여 지도를 표시 -->
-  <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
-  <script>
-    function initMap() {
-      var center = { lat: 37.5665, lng: 126.978 }; // 지도 중심 좌표
-      var map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12, // 지도 확대/축소 레벨
-        center: center, // 지도 중심 좌표
-      });
-    }
-  </script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script> -->
 </body>
 
 </html>

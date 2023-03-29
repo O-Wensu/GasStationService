@@ -7,7 +7,7 @@ import certifi
 
 ca=certifi.where()
 
-client = MongoClient("mongodb+srv://sparta:test@cluster0.dfkb4ze.mongodb.net/?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://sparta:test@cluster0.kqhn3uz.mongodb.net/?retryWrites=true&w=majority", tlsCAFile=ca)
 db = client.dbsparta
 
 # JWT 토큰 생성을 위한 비밀문자열
@@ -33,41 +33,22 @@ def login():
 def register():
     return render_template('join.html')
 
-@app.route('/review')
-def review_page() :
-    return render_template('review.html')
-
-@app.route('/list')
-def station_list() :
-    return render_template('list.html')
-
 #################################
 ##  검색 관련 API               ##
 #################################
 
-@app.route('/api/search', methods=['GET'])
+@app.route('/list', methods=['GET'])
 def serach_location():
    print("진입")
    keyword_receive = request.args.get('location')
    print(keyword_receive)
    return render_template('list.html', keyword=keyword_receive)
 
-# @app.route('/api/search', methods=['GET'])
-# def serach_location():
-#     dic = [{
-#         'name': "GS칼텍스 파주 필립스",
-#         'price': '1,533'
-#     }, {
-#         'name': "GS칼텍스 파주 필립스2",
-#         'price': '1,555'
-#     }]
-#     return render_template('list.html', keyword=dic)
-
 #################################
 ##  리뷰 관련 API               ##
 #################################
 
-@app.route('/station/review', methods=['GET'])
+@app.route('/review', methods=['GET'])
 def station_review() :
     print("진입")
     dic = { 
@@ -90,7 +71,7 @@ def web_review_post() :
     star_receive = request.form['star_give']
     date_receive = request.form['date_give']
     nickname_receive = request.form['nickname_give']
-    code_receive = request.form['code_give']#######################
+    code_receive = request.form['code_give']
 
     doc = {
         'created_at': date_receive,
@@ -98,7 +79,7 @@ def web_review_post() :
         'comment': comment_receive,
         'nickname': nickname_receive,
         'email': email_receive,
-        'code' : code_receive     ###############################
+        'code' : code_receive
     }
     db.review.insert_one(doc)
     return jsonify({'result' : 'success'})
@@ -118,7 +99,6 @@ def web_review_update():
     obj_id = ObjectId(id_receive)
     print(obj_id)
     star_receive = request.form['star_give']
-    #email_receive = request.form['email_give']
     comment_receive = request.form['comment_give']
     db.review.update_one({'_id':obj_id}, {"$set":{"comment": comment_receive, "star":star_receive}},upsert=True)
     return jsonify({'result': 'success', 'msg': '수정 완료'})
@@ -126,8 +106,7 @@ def web_review_update():
 
 #리뷰 조회
 @app.route('/api/review', methods = ['GET']) 
-def web_review_list() :
-    
+def web_review_list() : 
     all_data = list(db.review.find({},{'_id': False}))
     all_id = get_reviewId()
     return jsonify({'review': all_data, 'review_id': all_id})
@@ -178,10 +157,6 @@ def api_login():
 
     # 찾으면 JWT 토큰을 만들어 발급
     if result is not None:
-        # JWT 토큰에는, payload와 시크릿키가 필요합니다.
-        # 시크릿키가 있어야 토큰을 디코딩(=풀기) 해서 payload 값을 볼 수 있습니다.
-        # 아래에선 id와 exp를 담았습니다. 즉, JWT 토큰을 풀면 유저ID 값을 알 수 있습니다.
-        # exp에는 만료시간을 넣어줍니다. 만료시간이 지나면, 시크릿키로 토큰을 풀 때 만료되었다고 에러가 납니다.
         # 만료시간 3시간으로 설정
         payload = {
             'email': email_receive,
@@ -189,7 +164,7 @@ def api_login():
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
-        # token을 줍니다.
+        # token 발급
         return jsonify({'result': 'success', 'token': token})
     # 찾지 못하면
     else:
