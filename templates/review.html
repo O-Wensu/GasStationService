@@ -92,27 +92,30 @@
   <script type="text/javascript"
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
   <script>
-    let loginState = false;
-
     $(document).ready(function () {
-      isLogin()
+      loginStateUI()
       showReview()
     });
 
     //로그인 상태 여부에 따른 UI 변경
+    function loginStateUI() {
+      let loginState = isLogin()
+      if (loginState) {
+        console.log("로그인")
+        hasToken()
+      } else {
+        console.log("비 로그인")
+        noToken()
+      }
+    }
+
+    // 로그인 여부
     function isLogin() {
       let token = $.cookie('mytoken')
-      // 토큰이 없으면
-      console.log(token)
       if (token == null) {
-        console.log("비 로그인")
-        loginState = false;
-        noToken()
-      } else {
-        console.log("로그인")
-        loginState = true;
-        hasToken()
+        return false
       }
+      return true
     }
 
     //로그아웃
@@ -147,13 +150,17 @@
 
     //리뷰 저장
     function save_comment() {
-      try {
-        validComment()
-        let comment = $("#comment").val();
-        //회원 이메일 가져오기
-        let email = getUserEmail()
+      if (!isLogin()) { //비로그인 상태면 리뷰 저장 불가능
+        alert("로그인이 필요합니다.")
+        window.location.reload()
+      } else {
+        let user = getUserInfo()
+        let comment = $("#comment-input").val()
+        let email = user['email']
+        let nickname = user['nickname']
         let star = $("#star").val();
 
+        //리뷰 작성일
         let today = new Date();
         let year = today.getFullYear();
         let month = ("0" + (today.getMonth() + 1)).slice(-2);
@@ -166,17 +173,14 @@
         formData.append("star_give", star);
         formData.append("comment_give", comment);
         formData.append("email_give", email);
+        formData.append("nickname_give", nickname);
 
         fetch("/api/review", { method: "POST", body: formData })
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
-            alert(data["msg"]);
+            alert("리뷰 등록 완료")
+            window.location.reload();
           });
-        alert("리뷰 등록 완료")
-        window.location.reload();
-      } catch (EmptyElementException) {
-        alert("공백 제외, 5글자 이상 입력해주세요.")
       }
     }
 
@@ -195,8 +199,9 @@
             let email = a["email"];
             let star_repeat = "⭐".repeat(star);
 
-            if (loginState) {
-              let userEmail = getUserEmail()
+            if (isLogin()) {
+              let user = getUserInfo()
+              let userEmail = user['email']
               console.log(userEmail)
 
               //로그인한 회원이 쓴 리뷰인지 판단
@@ -212,24 +217,24 @@
         });
     }
 
-    // 회원 정보(이메일) 받기
-    function getUserEmail() {
+    // 회원 정보 받기
+    function getUserInfo() {
       let token = $.cookie('mytoken')
-      let email = ""
+      let user = ""
       $.ajax({
         type: 'POST',
-        async: false, 
+        async: false,
         url: '/api/user',
         data: {
           'token_give': token
         },
         success: function (response) {
           if (response['result'] == 'success') {
-            email = response['email']
+            user = response['user']
           }
         }
       });
-      return email
+      return user
     }
 
     // 다른 사람이 쓴 리뷰
@@ -289,12 +294,6 @@
       alert("수정 버튼 클릭")
     }
 
-    function validComment() {
-      let comment = $('#comment').val().trim()
-      if (comment.length < 5) {
-        throw EmptyElementException
-      }
-    }
   </script>
 </head>
 
@@ -363,11 +362,11 @@
       </div>
       <div class="comment-write">
         <div class="mb-3">
-          <textarea class="form-control" id="comment" rows="3" placeholder="Comment"></textarea>
+          <textarea class="form-control" id="comment-input" rows="3" placeholder="Comment"></textarea>
         </div>
         <div class="review" style="width: 60%; margin-left: 40%;">
           <select id="star" class="form-select" aria-label="Default select example">
-            <option selected>별점</option>
+            <option selected value="1">별점</option>
             <option value="1">⭐</option>
             <option value="2">⭐⭐</option>
             <option value="3">⭐⭐⭐</option>

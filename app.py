@@ -51,18 +51,22 @@ def review_page() :
     # print(temp)
     return render_template('review.html')
 
+#리뷰 저장
 @app.route('/api/review', methods=['POST'])
 def web_review_post() :
     comment_receive = request.form['comment_give']
-    #id는 어떻게 받아올 수 있을까?
-    #id_receive = request.form['id']
-    #주유소 정보
-    
+    email_receive = request.form['email_give']
     star_receive = request.form['star_give']
     date_receive = request.form['date_give']
-    #id를 받아올 방법을 알 경우 주석 해제
-    #doc = {'comment': comment_receive , 'id' : id_receive, 'star': star_receive}
-    doc = {'comment': comment_receive, 'star': star_receive, 'date': date_receive}
+    nickname_receive = request.form['nickname_give']
+
+    doc = {
+        'created_at': date_receive,
+        'star': star_receive,
+        'comment': comment_receive,
+        'nickname': nickname_receive,
+        'email': email_receive
+    }
     db.review.insert_one(doc)
     return jsonify({'result' : 'success'})
 
@@ -74,6 +78,7 @@ def web_review_delete():
 
 @app.route('/api/review', methods = ['GET']) 
 def web_review_list() :
+    
     all_data = list(db.review.find({},{'_id':False}))
     return jsonify({'review': all_data})
     # token_receive = request.cookies.get('mytoken')
@@ -130,10 +135,10 @@ def api_login():
         # 시크릿키가 있어야 토큰을 디코딩(=풀기) 해서 payload 값을 볼 수 있습니다.
         # 아래에선 id와 exp를 담았습니다. 즉, JWT 토큰을 풀면 유저ID 값을 알 수 있습니다.
         # exp에는 만료시간을 넣어줍니다. 만료시간이 지나면, 시크릿키로 토큰을 풀 때 만료되었다고 에러가 납니다.
-        # 만료시간 1시간으로 설정
+        # 만료시간 3시간으로 설정
         payload = {
             'email': email_receive,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=3)
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
 
@@ -150,7 +155,7 @@ def get_user():
     try: 
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         userinfo = db.user.find_one({'email': payload['email']}, {'_id': 0})
-        return jsonify({'result': 'success', 'email': userinfo['email'], 'nickname': userinfo['nickname']})
+        return jsonify({'result': 'success', 'user': userinfo})
 
     except jwt.ExpiredSignatureError:
         return jsonify({'result': 'fail', 'msg': '로그인 시간이 만료되었습니다.'})
