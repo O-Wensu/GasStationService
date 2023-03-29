@@ -67,7 +67,6 @@ def web_review_delete():
     db.review.delete_one({'_id':obj_id})
     return jsonify({'result': 'success', 'msg': '삭제 완료'})
 
-########################리뷰수정_구현중############################
 #리뷰 수정
 @app.route('/api/update', methods=['POST'])
 def web_review_update():
@@ -79,7 +78,7 @@ def web_review_update():
     comment_receive = request.form['comment_give']
     db.review.update_one({'_id':obj_id}, {"$set":{"comment": comment_receive, "star":star_receive}},upsert=True)
     return jsonify({'result': 'success', 'msg': '수정 완료'})
-#################################################################
+
 
 #리뷰 조회
 @app.route('/api/review', methods = ['GET']) 

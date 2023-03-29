@@ -221,16 +221,18 @@
             window.location.reload();
           });
       }
-      //////////////////////////수정_메서드_구현중////////////////////////////////////////////////////////////////////
-      function showUpdateUi(id) {
+      //리뷰 수정 UI
+      function showUpdateUi(id, nickname, comment) {
         alert("수정 버튼 클릭");
+        $("#comment").empty();
+        $("div.comment-write").empty();
         console.log(id);
         let temp_html = `<a href="#" class="list-group-item list-group-item-action">
                           <div class="d-flex w-100 justify-content-between">
-
-
+                            <label for="inputCity" class="form-label">
+                              리뷰 수정
+                              </label>
                           </div>
-
                           <select
                           id="star"
                           class="form-select"
@@ -250,8 +252,12 @@
                               id="comment-input"
                               rows="3"
                               placeholder="Comment"
-                            ></textarea>
+                            >${comment}</textarea>
                           </div>
+
+                          <label for="inputCity" class="form-label">
+                              작성자 : ${nickname}
+                              </label>
 
                           <div class="d-flex">
                             <div class="d-flex" style="margin: 0px 0px 0px auto;">
@@ -267,7 +273,7 @@
         $("#comment").append(temp_html);
       }
 
-      //리뷰 수정
+      //리뷰 수정 form
       function update_comment(review_id, star, comment) {
         if (!isLogin()) {
           //비로그인 상태면 리뷰 저장 불가능
@@ -276,9 +282,7 @@
         } else {
           let comment = $("#comment-input").val();
           let star = $("#star").val();
-          console.log(review_id);
-          console.log(star);
-          console.log(comment);
+
           $.ajax({
             type: "POST", // 변경
             url: "/api/update", // 변경
@@ -295,13 +299,6 @@
               }
             },
           });
-
-          // fetch("/api/update", { method: "POST", body: formData })
-          //   .then((res) => res.json())
-          //   .then((data) => {
-          //     alert("리뷰 등록 완료");
-          //     window.location.reload();
-          //   });
         }
       }
 
@@ -414,7 +411,7 @@
                               <small>작성자: </small>
                               <small class="writer">${nickname}</small>
                               <div class="d-flex" style="margin: 0px 0px 0px auto;">
-                                <small id="update-btn" onclick="showUpdateUi('${review_id}')" style="display: block;">수정</small>
+                                <small id="update-btn" onclick="showUpdateUi('${review_id}', '${nickname}','${comment}')" style="display: block;">수정</small>
                                 <small id="delete-btn" onclick="delete_comment('${review_id}')" style="margin-left: 15px; display: block;">삭제</small>
                               </div>
                             </div>
