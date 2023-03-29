@@ -7,7 +7,7 @@ import certifi
 
 ca=certifi.where()
 
-client = MongoClient("mongodb+srv://sparta:test@cluster0.zbsepl2.mongodb.net/test")
+client = MongoClient("mongodb+srv://oilshock:oilshock@cluster0.z5pqg3h.mongodb.net/?retryWrites=true&w=majority")
 db = client.dbsparta
 
 # JWT 토큰 생성을 위한 비밀문자열
@@ -33,12 +33,39 @@ def login():
 def register():
     return render_template('join.html')
 
-#################################
-##  리뷰 관련 API               ##
-#################################
 @app.route('/review')
 def review_page() :
     return render_template('review.html')
+
+@app.route('/list')
+def station_list() :
+    return render_template('list.html')
+
+#################################
+##  검색 관련 API               ##
+#################################
+
+@app.route('/api/search', methods=['GET'])
+def serach_location():
+    print("진입")
+    keyword_receive = request.args.get('location')
+    print(keyword_receive)
+    return render_template('list.html', keyword=keyword_receive)
+
+# @app.route('/api/search', methods=['GET'])
+# def serach_location():
+#     dic = [{
+#         'name': "GS칼텍스 파주 필립스",
+#         'price': '1,533'
+#     }, {
+#         'name': "GS칼텍스 파주 필립스2",
+#         'price': '1,555'
+#     }]
+#     return render_template('list.html', keyword=dic)
+
+#################################
+##  리뷰 관련 API               ##
+#################################
 
 #리뷰 저장
 @app.route('/api/review', methods=['POST'])
@@ -94,6 +121,7 @@ def get_reviewId():
     for data in id_reviews:
         data["_id"] = str(data["_id"])
     return id_reviews
+    
 #################################
 ##  로그인 및 회원가입 API      ##
 #################################
