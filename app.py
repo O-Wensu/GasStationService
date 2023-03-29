@@ -23,21 +23,11 @@ import hashlib
 
 @app.route('/')
 def home() :
-    #     token_receive = request.cookies.get('mytoken')
-    # try:
-    #     payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    #     user_info = db.user.find_one({"id": payload['id']})
-    #     return render_template('index.html', nickname=user_info["nickname"])
-    # except jwt.ExpiredSignatureError:
-    #     return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
-    # except jwt.exceptions.DecodeError:
-    #     return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 	return render_template('index.html')
 
 @app.route('/login')
 def login():
-    msg = request.args.get("msg")
-    return render_template('login.html', msg=msg)
+    return render_template('login.html')
 
 @app.route('/join')
 def register():
@@ -48,8 +38,6 @@ def register():
 #################################
 @app.route('/review')
 def review_page() :
-    # temp = request.args.get('name', '하하하') #주유소이름
-    # print(temp)
     return render_template('review.html')
 
 #리뷰 저장
@@ -71,6 +59,7 @@ def web_review_post() :
     db.review.insert_one(doc)
     return jsonify({'result' : 'success'})
 
+#리뷰 삭제
 @app.route('/api/delete', methods=['POST'])
 def web_review_delete():
     id_receive = request.form['id_give']
@@ -78,8 +67,10 @@ def web_review_delete():
     db.review.delete_one({'_id':obj_id})
     return jsonify({'result': 'success', 'msg': '삭제 완료'})
 
+#리뷰 조회
 @app.route('/api/review', methods = ['GET']) 
 def web_review_list() :
+    
     all_data = list(db.review.find({},{'_id': False}))
     all_id = get_reviewId()
     return jsonify({'review': all_data, 'review_id': all_id})
