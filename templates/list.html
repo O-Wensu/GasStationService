@@ -146,7 +146,7 @@
                     diesel = e['PRICE']
                 }
             })
-            let temphtml = `<a href="#" class="list-group-item list-group-item-action">
+            let temphtml = `<a href="" class="list-group-item list-group-item-action">
                                 <div class="d-flex w-100 justify-content-between">
                                     <h5 class="mb-1 station-name">${infoName}</h5>
                                 </div>
@@ -162,7 +162,7 @@
 </head>
 
 <body>
-    <!--     매니저님이랑한 코드
+        <!-- 매니저님이랑한 코드
     {% for k in keyword %}
     {{k['name']}}, {{k['price']}}
     {% endfor %} -->
@@ -172,6 +172,7 @@
     <script type="text/javascript"
         src="//dapi.kakao.com/v2/maps/sdk.js?appkey=beca46d4e7e23adeaca7d364f08bcb89&libraries=services"></script>
     <script>
+        var searchAddr = "{{ keyword }}"
         // 마커를 클릭하면 장소명을 표출할 인포윈도우 입니다
         var infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
 
@@ -188,7 +189,7 @@
         var ps = new kakao.maps.services.Places();
 
         // 키워드로 장소를 검색합니다
-        ps.keywordSearch('영등포구', placesSearchCB);
+        ps.keywordSearch(searchAddr, placesSearchCB);
 
         // 키워드 검색 완료 시 호출되는 콜백함수 입니다
         function placesSearchCB(data, status, pagination) {

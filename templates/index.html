@@ -89,18 +89,20 @@
 		//검색
 		function search() {
 			let keyword = $('#search-input').val()
-			$.ajax({
-				type: "GET",
-				url: "api/search?location=" + keyword,
-				dataType: "json",
-				cache: false,
-				success: function (response) {
-				},
-				error: function (e) {
-					alert('error');
-					alert(e.responseText);
-				}
-			});
+			window.location.href="/api/search?location=" + keyword
+			// $.ajax({
+			// 	type: "GET",
+			// 	url: "/api/search?location=" + keyword,
+			// 	// data: {"key" : keyword},
+			// 	cache: false,
+			// 	success: function (response) {
+			// 		// alert('success')
+			// 	},
+			// 	error: function (e) {
+			// 		// alert('error');
+			// 		// alert(e.responseText);
+			// 	}
+			// });
 		}
 	</script>
 </head>
@@ -119,9 +121,9 @@
 	</div>
 
 	<div class="container">
-		<input class="form-control form-control-lg" type="text" placeholder="위치를 입력해주세요"
+		<input id="search-input" class="form-control form-control-lg" type="text" placeholder="위치를 입력해주세요"
 			aria-label=".form-control-lg example">
-		<button onclick="search(), location.href='/list'" class="btn btn-secondary" id="submit-btn">검색</button>
+		<button onclick="search()" class="btn btn-secondary" id="submit-btn">검색</button>
 	</div>
 </body>
 
