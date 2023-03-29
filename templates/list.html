@@ -177,16 +177,21 @@
 
                 var locationTransform
                 var uniIdList = new Array();
+                var code = 'F230329089'
                 fetch(`https://apis.openapi.sk.com/tmap/geo/coordconvert?version=1&lat=${centerLat}&lon=${centerLng}&fromCoord=WGS84GEO&toCoord=KATECH`,
                     options)
                     .then(response => response.json())
                     .then(response => locationTransform = response['coordinate'])
-                    .then(response => fetch(`https://www.opinet.co.kr/api/aroundAll.do?code=F230328087&x=${locationTransform['lon']}&y=${locationTransform['lat']}&radius=5000&sort=1&prodcd=B027&out=json`).then(res => res.json()).then(data => {
+                    .then(response => fetch(`https://www.opinet.co.kr/api/aroundAll.do?code=${code}&x=${locationTransform['lon']}&y=${locationTransform['lat']}&radius=1500&sort=1&prodcd=B027&out=json`)
+                    .then(res => res.json())
+                    .then(data => {
                         let result = data['RESULT']['OIL']
                         $('#station-list').empty()
                         result.forEach((e) => {
                             let uniId = e['UNI_ID']
-                            fetch(`https://www.opinet.co.kr/api/detailById.do?code=F230328087&id=${uniId}&out=json`).then(res => res.json()).then(data => {
+                            fetch(`https://www.opinet.co.kr/api/detailById.do?code=${code}&id=${uniId}&out=json`)
+                            .then(res => res.json())
+                            .then(data => {
                                 let information = data['RESULT']['OIL']
                                 information.forEach((info) => {
                                     let infoName = info['OS_NM']
@@ -199,6 +204,7 @@
                     }))
                     .catch(err => console.error(err));
 
+                    // F230329089
             }
         }
         // 지도에 마커를 표시하는 함수입니다
