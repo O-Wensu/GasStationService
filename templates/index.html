@@ -85,6 +85,23 @@
 			alert("로그아웃")
 			window.location.reload()
 		}
+
+		//검색
+		function search() {
+			let keyword = $('#search-input').val()
+			$.ajax({
+				type: "GET",
+				url: "api/search?location=" + keyword,
+				dataType: "json",
+				cache: false,
+				success: function (response) {
+				},
+				error: function (e) {
+					alert('error');
+					alert(e.responseText);
+				}
+			});
+		}
 	</script>
 </head>
 
@@ -104,7 +121,7 @@
 	<div class="container">
 		<input class="form-control form-control-lg" type="text" placeholder="위치를 입력해주세요"
 			aria-label=".form-control-lg example">
-		<button onclick="search()" type="button" class="btn btn-secondary" id="submit-btn">검색</button>
+		<button onclick="search(), location.href='/list'" class="btn btn-secondary" id="submit-btn">검색</button>
 	</div>
 </body>
 
