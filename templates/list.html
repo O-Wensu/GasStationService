@@ -23,9 +23,11 @@
         }
 
         .sign-register {
-            width: 10%;
-            margin: 0px 0px 0px auto;
-            margin-top: 2%;
+            display: flex;
+            flex-direction: row;
+            align-items: right;
+            justify-content: right;
+            margin: 15px 10px 20px auto;
         }
 
         .search-container {
@@ -101,8 +103,39 @@
             margin-top: 3%;
         }
     </style>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script>
+        // 메인페이지 접속시 로그인 상태 여부에 따라 UI 변경
+        $(document).ready(function () {
+            isLogin()
+        });
+
+        //로그인 상태 여부 확인
+        function isLogin() {
+            let token = $.cookie('mytoken')
+            console.log(token)
+            // 토큰이 없으면
+            if (token == null) {
+                console.log("비 로그인")
+                $('#logout').css('display', 'none')
+                $('#login').css('display', 'block')
+                $('#join').css('display', 'block')
+            } else {
+                console.log("로그인")
+                $('#logout').css('display', 'block')
+                $('#login').css('display', 'none')
+                $('#join').css('display', 'none')
+            }
+        }
+
+        //로그아웃
+        function logout() {
+            // 토큰 제거
+            $.removeCookie('mytoken');
+            alert("로그아웃")
+            window.location.reload()
+        }
+
         function makeList(infoName, infoAddress, infoPrice) {
             let gasoline, diesel
             infoPrice.forEach((e) => {
@@ -129,6 +162,11 @@
 </head>
 
 <body>
+    <!--     매니저님이랑한 코드
+    {% for k in keyword %}
+    {{k['name']}}, {{k['price']}}
+    {% endfor %} -->
+
     <div id="map" style="width:0%; height:0px;"></div>
 
     <script type="text/javascript"
@@ -183,28 +221,28 @@
                     .then(response => response.json())
                     .then(response => locationTransform = response['coordinate'])
                     .then(response => fetch(`https://www.opinet.co.kr/api/aroundAll.do?code=${code}&x=${locationTransform['lon']}&y=${locationTransform['lat']}&radius=1500&sort=1&prodcd=B027&out=json`)
-                    .then(res => res.json())
-                    .then(data => {
-                        let result = data['RESULT']['OIL']
-                        $('#station-list').empty()
-                        result.forEach((e) => {
-                            let uniId = e['UNI_ID']
-                            fetch(`https://www.opinet.co.kr/api/detailById.do?code=${code}&id=${uniId}&out=json`)
-                            .then(res => res.json())
-                            .then(data => {
-                                let information = data['RESULT']['OIL']
-                                information.forEach((info) => {
-                                    let infoName = info['OS_NM']
-                                    let infoAddress = info['NEW_ADR']
-                                    let infoPrice = info['OIL_PRICE']
-                                    makeList(infoName, infoAddress, infoPrice)
-                                })
+                        .then(res => res.json())
+                        .then(data => {
+                            let result = data['RESULT']['OIL']
+                            $('#station-list').empty()
+                            result.forEach((e) => {
+                                let uniId = e['UNI_ID']
+                                fetch(`https://www.opinet.co.kr/api/detailById.do?code=${code}&id=${uniId}&out=json`)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        let information = data['RESULT']['OIL']
+                                        information.forEach((info) => {
+                                            let infoName = info['OS_NM']
+                                            let infoAddress = info['NEW_ADR']
+                                            let infoPrice = info['OIL_PRICE']
+                                            makeList(infoName, infoAddress, infoPrice)
+                                        })
+                                    })
                             })
-                        })
-                    }))
+                        }))
                     .catch(err => console.error(err));
 
-                    // F230329089
+                // F230329089
             }
         }
         // 지도에 마커를 표시하는 함수입니다
@@ -226,8 +264,11 @@
     </script>
 
     <div class="sign-register">
-        <a href="#" class="user login" style="margin: 2%;">로그인</a>
-        <a href="#" class="user register">회원가입</a>
+        <button onclick="location.href='/login'" id="login" type="button" class="btn btn-login">로그인</button>
+        <button onclick="location.href='/join'" id="join" type="button" class="btn btn-join">회원가입</button>
+        <button onclick="logout()" id="logout" type="button" class="btn btn-join" style="display: none;">
+            로그아웃
+        </button>
     </div>
     <div class="search-container">
         <!-- 검색창 -->
