@@ -225,13 +225,11 @@
                         for (const e of result) {
                             // 주유소 아이디
                             const uniId = e.UNI_ID;
-                            console.log(1 + uniId);
 
                             // 주유소 상세 정보
                             const res = await fetch(`https://www.opinet.co.kr/api/detailById.do?code=${code}&id=${uniId}&out=json`);
                             const data = await res.json();
-                            console.log(2 + uniId);
-
+                            
                             const information = data.RESULT.OIL;
                             information.forEach((info) => {
                                 const infoName = info.OS_NM;
