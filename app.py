@@ -7,7 +7,7 @@ import certifi
 
 ca=certifi.where()
 
-client = MongoClient("mongodb+srv://oilshock:oilshock@cluster0.z5pqg3h.mongodb.net/?retryWrites=true&w=majority", tlsCAFile=ca)
+client = MongoClient("mongodb+srv://sr4:oilshock@oilshock.p1o4a7x.mongodb.net/?retryWrites=true&w=majority")
 db = client.dbsparta
 
 # JWT 토큰 생성을 위한 비밀문자열
@@ -165,9 +165,9 @@ def api_login():
             'email': email_receive,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=3)
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')      
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')      
         # token 발급
-        return jsonify({'result': 'success', 'token': token}).decode('utf-8')
+        return jsonify({'result': 'success', 'token': token})
     # 찾지 못하면
     else:
         return jsonify({'result': 'fail', 'msg': '로그인 또는 비밀번호가 일치하지 않습니다.'})
