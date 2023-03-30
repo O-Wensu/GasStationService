@@ -271,8 +271,8 @@
         let star = $("#star").val();
 
         $.ajax({
-          type: "POST", 
-          url: "/api/update", 
+          type: "POST",
+          url: "/api/update",
           data: {
             id_give: review_id,
             star_give: star,
@@ -297,48 +297,34 @@
           $("#comment").empty();
           let all_review = data["review"];
           let all_id = data["review_id"];
+          
           let count = 0;
           all_review.forEach((a) => {
             let code = a["code"];
             if (code == "{{ data['code'] }}") {
-            let date = a["created_at"];
-            let star = a["star"];
-            let comment = a["comment"];
-            let nickname = a["nickname"];
-            let email = a["email"];
-            let review_id = all_id[count]["_id"];
-            let star_repeat = "⭐".repeat(star);
+              let date = a["created_at"];
+              let star = a["star"];
+              let comment = a["comment"];
+              let nickname = a["nickname"];
+              let email = a["email"];
+              let review_id = all_id[count]["_id"];
+              let star_repeat = "⭐".repeat(star);
 
-            if (isLogin()) {
-              let user = getUserInfo();
-              let userEmail = user["email"];
+              if (isLogin()) {
+                let user = getUserInfo();
+                let userEmail = user["email"];
 
-              //로그인한 회원이 쓴 리뷰인지 판단
-              if (userEmail == email) {
-                myReview(
-                  review_id,
-                  date,
-                  star,
-                  comment,
-                  nickname,
-                  email,
-                  star_repeat
-                );
+                //로그인한 회원이 쓴 리뷰인지 판단
+                if (userEmail == email) {
+                  myReview(review_id,date,star,comment,nickname,email,star_repeat);
+                } else {
+                  otherReview(date,star,comment,nickname,email,star_repeat);
+                }
               } else {
-                otherReview(
-                  date,
-                  star,
-                  comment,
-                  nickname,
-                  email,
-                  star_repeat
-                );
-              }
-            } else {
-              otherReview(date, star, comment, nickname, email, star_repeat);
+                otherReview(date, star, comment, nickname, email, star_repeat);
+              } 
             }
-            count++;
-          }
+            count++
           });
         });
     }
@@ -491,7 +477,7 @@
     <!-- 리스트 영역 -->
     <div id="list">
       <div id="comment" class="list-group">
-        
+
       </div>
       <div class="comment-write">
         <div class="mb-3">
