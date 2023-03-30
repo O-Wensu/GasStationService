@@ -7,7 +7,7 @@ import certifi
 
 ca=certifi.where()
 
-client = MongoClient("mongodb+srv://sparta:test@cluster0.kqhn3uz.mongodb.net/?retryWrites=true&w=majority", tlsCAFile=ca)
+client = MongoClient("mongodb+srv://oilshock:oilshock@cluster0.z5pqg3h.mongodb.net/?retryWrites=true&w=majority", tlsCAFile=ca)
 db = client.dbsparta
 
 # JWT 토큰 생성을 위한 비밀문자열
@@ -25,11 +25,13 @@ import hashlib
 def home() :
 	return render_template('index.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET'])
 def login():
+    url_receive = request.args.get('redirect')
+
     return render_template('login.html')
 
-@app.route('/join')
+@app.route('/join', methods=['GET'])
 def register():
     return render_template('join.html')
 
@@ -43,6 +45,7 @@ def serach_location():
    keyword_receive = request.args.get('location')
    print(keyword_receive)
    return render_template('list.html', keyword=keyword_receive)
+
 
 #################################
 ##  리뷰 관련 API               ##
@@ -162,10 +165,9 @@ def api_login():
             'email': email_receive,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=3)
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')      
         # token 발급
-        return jsonify({'result': 'success', 'token': token})
+        return jsonify({'result': 'success', 'token': token}).decode('utf-8')
     # 찾지 못하면
     else:
         return jsonify({'result': 'fail', 'msg': '로그인 또는 비밀번호가 일치하지 않습니다.'})
@@ -185,4 +187,4 @@ def get_user():
         return jsonify({'result': 'fail', 'msg': '로그인 정보가 존재하지 않습니다.'})
 
 if __name__ == '__main__' :
-		app.run('0.0.0.0', port = 5001, debug = True)
+		app.run('0.0.0.0', port = 5000, debug = True)
