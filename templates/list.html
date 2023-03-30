@@ -208,39 +208,41 @@
                     headers: { accept: 'application/json', appKey: 'e8wHh2tya84M88aReEpXCa5XTQf3xgo01aZG39k5' }
                 };
 
-                var locationTransform
-                var uniIdList = new Array();
-                var code = 'F230328087' // 주유소 API 코드
+                let locationTransform;
+                const code = 'F230328087'; // 주유소 API 코드
+
                 // 중심 좌표 변환
-                fetch(`https://apis.openapi.sk.com/tmap/geo/coordconvert?version=1&lat=${centerLat}&lon=${centerLng}&fromCoord=WGS84GEO&toCoord=KATECH`,
-                    options)
+                fetch(`https://apis.openapi.sk.com/tmap/geo/coordconvert?version=1&lat=${centerLat}&lon=${centerLng}&fromCoord=WGS84GEO&toCoord=KATECH`, options)
                     .then(response => response.json())
-                    .then(response => locationTransform = response['coordinate'])
-                    // 근처 주유소 목록
-                    .then(response => fetch(`https://www.opinet.co.kr/api/aroundAll.do?code=${code}&x=${locationTransform['lon']}&y=${locationTransform['lat']}&radius=2000&sort=1&prodcd=B027&out=json`)
-                        .then(res => res.json())
-                        .then(data => {
-                            let result = data['RESULT']['OIL']
-                            $('#station-list').empty()
-                            result.forEach((e) => {
-                                // 주유소 아이디
-                                let uniId = e['UNI_ID']
-                                // 주유소 상세 정보
-                                fetch(`https://www.opinet.co.kr/api/detailById.do?code=${code}&id=${uniId}&out=json`)
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        let information = data['RESULT']['OIL']
-                                        information.forEach((info) => {
-                                            let infoName = info['OS_NM']
-                                            let infoAddress = info['NEW_ADR']
-                                            let infoPrice = info['OIL_PRICE']
-                                            let lat = info['GIS_X_COOR']
-                                            let lon = info['GIS_Y_COOR']
-                                            makeList(uniId, infoName, infoAddress, infoPrice, lat, lon)
-                                        })
-                                    })
-                            })
-                        }))
+                    .then(response => locationTransform = response.coordinate)
+                    .then(async () => {
+                        // 근처 주유소 목록
+                        const res = await fetch(`https://www.opinet.co.kr/api/aroundAll.do?code=${code}&x=${locationTransform.lon}&y=${locationTransform.lat}&radius=2000&sort=1&prodcd=B027&out=json`);
+                        const data = await res.json();
+                        const result = data.RESULT.OIL;
+                        $('#station-list').empty();
+
+                        for (const e of result) {
+                            // 주유소 아이디
+                            const uniId = e.UNI_ID;
+                            console.log(1 + uniId);
+
+                            // 주유소 상세 정보
+                            const res = await fetch(`https://www.opinet.co.kr/api/detailById.do?code=${code}&id=${uniId}&out=json`);
+                            const data = await res.json();
+                            console.log(2 + uniId);
+
+                            const information = data.RESULT.OIL;
+                            information.forEach((info) => {
+                                const infoName = info.OS_NM;
+                                const infoAddress = info.NEW_ADR;
+                                const infoPrice = info.OIL_PRICE;
+                                const lat = info.GIS_X_COOR;
+                                const lon = info.GIS_Y_COOR;
+                                makeList(uniId, infoName, infoAddress, infoPrice, lat, lon);
+                            });
+                        }
+                    })
                     .catch(err => console.error(err));
 
             }
